@@ -105,26 +105,3 @@ up_date = up_date.date().isoformat()
 create_event_in_calendar("לעדכן את הרשימות", up_date, get_email)
 
 printEvents()
-"""
-# example of an event
-my_event = {
-  'summary': 'שרון',
-  'description': text,
-  'start': {
-    'date': tomorrow,
-  },
-  'end': {
-    'date': tomorrow,
-  },
-  'colorID': c1,
-  'attendees': [
-    {'email': 'idoshziv@gmail.com'}
-  ]
-}
-
-
-
-# add event to calendar
-# event = service.events().insert(calendarId='primary', body=my_event).execute()
-# print('Event created: %s' % (event.get('htmlLink')))
-

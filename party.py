@@ -20,19 +20,7 @@ def get_names_from_excel():
     big_list = []
     for i in range(len(namelist)):
         big_list.append([namelist[i],dateslist[i]])
-
-    # for x in big_list:
-    #     print(x)
-    # print("\n$$$$$$$$$$$$$$$$$$$$$$$$$\n")
     big_list.sort(key= lambda x: x[0])
-    # for x in big_list:
-    #     print(x)
-    # print("$$$$$$$$$$$$$$$$namelist$$$$$$$$$$$$$$")
-    # print(namelist)
-    # namelist.sort()
-    # print("now sorted: ")
-    # print(namelist)
-    # print()
     return big_list
 
 
@@ -47,16 +35,10 @@ def get_dates_from_excel():
 
 # returns a list of names from the db
 def get_names_from_db(db):
-    # print("$$$$$$$$$$$$$$$$$$$$$db$$$$$$$$$$$$$$$$$$$$$")
     db_names = []
     for i in db:
        db_names.append([i["name"],i["isDeleted"]])
     db_names.sort(key= lambda x: x[0])
-    # print("&&&&&&&&&&&7777db&&&&&&&&&&&&&&&&&&\n")
-    # print(db)
-    # print("now sorted:")
-    # print(db_names)
-    # print("\n\n")
     return db_names
 
 
@@ -132,7 +114,6 @@ def add_names_to_db(db, namelist, db_names):
     db += sorted_compare_between_excel_and_db(db, namelist, db_names)
     print("add_names_to_db")
     print_db(db)
-    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     with open('contact_db.json', 'w', encoding="utf8") as updated:
         json.dump(db,updated,ensure_ascii=False,indent=4)
 
@@ -140,9 +121,7 @@ def add_names_to_db(db, namelist, db_names):
 # shuffle the places list
 def get_shuffle_list_of_places(window):
     list_of_places = [item for item in range(0, window)]
-    # print(list_of_places)
     random.shuffle(list_of_places)
-    # print(list_of_places)
     return list_of_places
 
 
@@ -151,14 +130,12 @@ def get_priorities_from_db(db):
     pri = []
     to_day = datetime.datetime.now().date().day
     to_month = datetime.datetime.now().date().month
-    # print(f"\nlook at dates:")
     for x in db:
         if x["priority"] == 9:
             date_spread = x["date"]
             day_in_date = int(date_spread[-2:])
             ma = date_spread[5:]
             month_in_date = int(ma[:2])
-            # print(day_in_date, today)
             if month_in_date == to_month:
                 if abs(day_in_date - to_day) < 7:
                     x["priority"] = 1
@@ -168,9 +145,6 @@ def get_priorities_from_db(db):
                     pri.append(x["name"])
             else:
                 pri.append(x["name"])
-    print("get_priorities_from_db\n")
-    print_db(db)
-    print("~~~~~~~~~~~~fin~~~~~~~~~~~~~~~\n")
     return pri
 
 
@@ -218,11 +192,8 @@ def create_time_table():
 def create_events_list(db, window):
     places = get_shuffle_list_of_places(window)
     priority = get_priorities_from_db(db)
-    # print(f"priority_for_ido \n{priority}\n")
     meds = get_med_from_db(db)
-    # print(f"meds_for_ido \n{meds}\n")
     ones = get_ones_from_db(db)
-    # print(f"ones_for_ido \n{ones}\n")
     current_table = create_time_table()
     session = []
     session_dates = []
@@ -241,7 +212,6 @@ def create_events_list(db, window):
             node["name"] = ones[0]
             session.append(ones[0])
             ones = ones[1:]
-    # print(f"session \n{session}\n")
     last_five_tables = current_table[-5:]
     last_five = [x["name"] for x in last_five_tables]
     for contact in db:
@@ -272,54 +242,13 @@ def main():
         db = json.load(db_file)
     with open('conf.json', 'r') as conf_file:
         conf = json.load(conf_file)
-    # print("we started")
-    # print_db(db)
-    # print("!!!!!!!!!!!!!!!!!!!!")
     excel_names = get_names_from_excel()
     old_names = get_names_from_db(db)
     add_names_to_db(db, excel_names, old_names)
-    # print("\nafter cosmetics")
-    # print_db(db)
-    # print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
     window = conf["window_size"]
     time_table = create_events_list(db, window)
-    # print("MAMI")
-    # print_db(time_table)
-    # print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
     return time_table
 
 
 main()
-
-# get_names_from_excel()
-
-# check the create_events_list method
-"""
-print("$$$$$$$$$$$$$$$$$$before run$$$$$$$$$$$$$$$$$$\n")
-for x in db:
-    print(x)
-g_force = create_events_list(db, 15)
-print("\n$$$$$$$$$$$$$$$$$$after run$$$$$$$$$$$$$$$$$$\n")
-for x in db:
-    print(x)
-print("\n%%%%%%%%%%%%%%%%% table %%%%%%%%%%%%%%%%%%%%%\n")
-for g in g_force:
-    print(g)
-"""
-
-"""
-contact = {}
-list_of_contacts = []
-
-for i in range(15):
-    contact["name"] = f"name{i}"
-    contact["date"] = "2020-04-15"
-    contact["priority"] = 9
-    contact["isDeleted"] = False
-    list_of_contacts.append(contact)
-    contact= {}
-
-with open("contact_db.json", 'w+') as db:
-    json.dump(list_of_contacts,db,indent=4,ensure_ascii=False)
-"""
 

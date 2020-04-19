@@ -103,7 +103,8 @@ with open('conf.json') as conf_file:
 get_email = conf["service_email"]
 events_list = party.main()
 
-
+for e in events_list:
+    create_event_in_calendar(e["name"], e["date"], get_email)
 
 
 last = events_list[-1:][0]
